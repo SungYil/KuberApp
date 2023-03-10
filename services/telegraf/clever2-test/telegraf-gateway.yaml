@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: telegraf-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - telegraf.clever2-test.vsmart00.com
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - telegraf.clever2-test.vsmart00.com
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: telegraf-cert
+        mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: telegraf-virtualservice
+spec:
+  gateways:
+    - telegraf-gateway
+  hosts:
+    - "*"
+  http:
+    - match:
+        - uri:
+            prefix: /
+      corsPolicy:
+        allowCredentials: true
+        allowHeaders:
+          - "*"
+        allowMethods:
+          - POST
+          - GET
+          - PUT
+          - OPTIONS
+        allowOrigins:
+          - regex: ".*"
+      route:
+        - destination:
+            host: telegraf-service
+            port:
+              number: 8125

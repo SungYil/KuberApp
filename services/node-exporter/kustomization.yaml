@@ -1,0 +1,5 @@
+namespace: monitoring
+
+resources:
+  - ./node-exporter.yaml
+  - ./node-exporter-svc.yaml

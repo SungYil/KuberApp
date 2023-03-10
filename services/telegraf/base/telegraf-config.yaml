@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-config
+data:
+  telegraf.conf: |+
+    [[outputs.influxdb_v2]]
+      urls=["$INFLUXDB_URL"]
+      bucket="$INFLUXDB_DB"
+      organization="$INFLUXDB_ORG"
+      token="$INFLUXDB_TOKEN"
+
+    [[inputs.http_response]]
+      urls=["https://cvboard.eg2.dentalclever.com/"]
+      response_timeout="5s"
+      method="GET"
+      follow_redirects=false
+      [inputs.http_response.tags]
+      zone="cd2-eg-prod"
+
+    [[inputs.http_response]]
+      urls=["https://github.com/prometheus"]
+      response_timeout="5s"
+      method="GET"
+      follow_redirects=true
+      [inputs.http_response.tags]
+      zone="cd2-eg-prod"
+
+    [[inputs.http_response]]
+      urls=["https://cvboard.clever2-qa-egypt.vsmart00.com"]
+      response_timeout="5s"
+      method="GET"
+      follow_redirects=false
+      [inputs.http_response.tags]
+      zone="cd2-eg-qa"
+    
+    [[inputs.http_response]]
+      urls=["https://cvboard.jgtest.vsmart00.com"]
+      response_timeout="5s"
+      method="GET"
+      follow_redirects=false
+      [inputs.http_response.tags]
+      zone="cd-na-jgtest"

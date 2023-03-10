@@ -1,0 +1,15 @@
+namespace: prometheus
+
+bases:
+  - ../base
+
+resources:
+  - ./prometheus-gateway.yaml
+
+images:
+  - name: prometheus
+    newName: prometheus
+    newTag: latest
+
+generatorOptions:
+  disableNameSuffixHash: true

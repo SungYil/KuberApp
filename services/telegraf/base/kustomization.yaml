@@ -1,0 +1,8 @@
+namespace: influxdb
+
+resources:
+  - ./telegraf-namespace.yaml
+  - ./telegraf-config.yaml
+  - ./telegraf-secret.yaml
+  - ./telegraf-svc.yaml
+  - ./telegraf.yaml

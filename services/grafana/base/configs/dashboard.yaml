@@ -1,0 +1,10 @@
+apiVersion: 1
+providers:
+  - name: "Metric data provider"
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana-data/dashboards

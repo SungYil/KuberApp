@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-issuer
+spec:
+  acme:
+    email: vatechplatform@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-secret
+    solvers:
+      - selector:
+          dnsZones:
+            - "vsmart00.com"
+        dns01:
+          route53:
+            region: ap-northeast-2
+            accessKeyID: AKIAQ2QNHP3AA2Q6MG4D
+            secretAccessKeySecretRef:
+              name: aws-secret
+              key: AWS_SECRET_ACCESS_KEY

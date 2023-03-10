@@ -1,0 +1,7 @@
+namespace: influxdb
+
+bases:
+  - ../base
+
+resources:
+  - ./influx-gateway.yaml

@@ -1,0 +1,7 @@
+namespace: argocd
+
+bases:
+  - ../base
+
+resources:
+  - ./argocd-gateway.yaml

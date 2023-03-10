@@ -1,0 +1,4 @@
+namespace: argocd
+
+resources:
+  - ./argocd-cmd-params-cm.yaml

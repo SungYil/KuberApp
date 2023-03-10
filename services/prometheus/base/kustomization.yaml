@@ -1,0 +1,16 @@
+namespace: prometheus
+
+resources:
+  - ./prometheus.yaml
+  - ./prometheus-svc.yaml
+  - ./prometheus-rbac.yaml
+  - ./prometheus-pv.yaml
+  - ./rules/prometheus-rules.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: prometheus-server-conf
+    files:
+      - ./configs/prometheus.yml

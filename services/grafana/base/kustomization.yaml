@@ -1,0 +1,19 @@
+namespace: monitors
+
+resources:
+  - ./grafana.yaml
+  - ./grafana-svc.yaml
+  - ./configs/grafana-secret.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: grafana-conf
+    files:
+      - ./configs/grafana.ini
+
+  - name: grafana-provisioning-conf
+    files:
+      - ./configs/dashboard.yaml
+      - ./configs/datasource.yaml

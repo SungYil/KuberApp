@@ -1,0 +1,8 @@
+namespace: monitor
+
+resources:
+  - ./influxdb-pvc.yaml
+  - ./influxdb-secret.yaml
+  - ./influxdb-svc.yaml
+  - ./influxdb.yaml
+  - ./influxdb-namespace.yaml
