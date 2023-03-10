@@ -1,0 +1,18 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: 52.78.251.181:6443
+    token: abcdef.0123456789abcdef
+    unsafeSkipCAVerification: true
+  timeout: 5m0s
+  tlsBootstrapToken: abcdef.0123456789abcdef
+nodeRegistration:
+  kubeletExtraArgs:
+    cloud-provider: aws
+  criSocket: /var/run/crio/crio.sock
+  imagePullPolicy: IfNotPresent
+  taints: []
+caCertPath: /etc/kubernetes/pki/ca.crt
+controlPlane:
+  certificateKey: 0faec066c7b58657b6e9879c79d32b7ab1e7208a3c93dff6f6de0b4b4412d5ff

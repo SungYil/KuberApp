@@ -1,0 +1,26 @@
+all:
+  vars:
+    ansible_user: ubuntu
+  hosts:
+    ip-192-168-224-217.ap-northeast-2.compute.internal:
+      ansible_host: ec2-52-78-251-181.ap-northeast-2.compute.amazonaws.com
+    ip-192-168-47-189.ap-northeast-2.compute.internal:
+      ansible_host: ec2-52-78-197-96.ap-northeast-2.compute.amazonaws.com
+    ip-192-168-206-181.ap-northeast-2.compute.internal:
+      ansible_host: ec2-3-39-105-105.ap-northeast-2.compute.amazonaws.com
+  children:
+    master:
+      hosts:
+        ip-192-168-224-217.ap-northeast-2.compute.internal:
+      vars:
+        k8s_kubeadm_config: configs/clevervsup/master.yaml
+    slave:
+      hosts:
+        ip-192-168-47-189.ap-northeast-2.compute.internal:
+      vars:
+        k8s_kubeadm_config: configs/clevervsup/slave.yaml
+    worker:
+      hosts:
+        ip-192-168-206-181.ap-northeast-2.compute.internal:
+      vars:
+        k8s_kubeadm_config: configs/clevervsup/worker.yaml

@@ -1,0 +1,8 @@
+- hosts: master
+  become: true
+  tasks:
+    - name: Copy kubeconfig to local
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ~/.kube/config
+        flat: yes

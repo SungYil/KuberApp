@@ -1,0 +1,35 @@
+- hosts: all
+  vars:
+    arch: amd64
+    version: v1.25.0
+  become: true
+  tasks:
+    - name: Install kubeadm/kubelet/kubectl binary files
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/{{ version }}/bin/linux/{{ arch }}/{{ item }}
+        dest: /usr/bin/{{ item }}
+        mode: 0755
+        force: true
+      with_items:
+        - kubeadm
+        - kubelet
+        - kubectl
+
+    - name: Make the kubelet service directory
+      file:
+        path: /etc/systemd/system/kubelet.service.d
+        state: directory
+        mode: 0755
+
+    - name: Copy the kubelet service to server location
+      copy: src=kubelet.service dest=/etc/systemd/system/kubelet.service mode=0644
+
+    - name: Copy the kubeadm configuration to server location
+      copy: src=kubeadm.conf dest=/etc/systemd/system/kubelet.service.d/10-kubeadm.conf mode=0644
+
+    - name: Reload kubelet service
+      systemd:
+        daemon_reload: yes
+
+    - name: Start kubelet service
+      service: name=kubelet state=started enabled=yes

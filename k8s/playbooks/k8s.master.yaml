@@ -1,0 +1,57 @@
+- hosts: "{{ group | default('master') }}"
+  vars:
+    hostip: "{{ ansible_host }}"
+    hostname: "{{ inventory_hostname }}"
+  become: true
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ hostname }}"
+
+    - name: Add hostname
+      lineinfile:
+        path: /etc/hosts
+        regexp: "{{ ansible_node }}"
+        line: "{{ ansible_node }} {{ hostname }}.cluster.local {{ hostname }}"
+        create: yes
+      when: ansible_node is defined
+
+    - name: Add hostname
+      lineinfile:
+        path: /etc/hosts
+        regexp: "{{ hostip }}"
+        line: "{{ hostip }} {{ hostname }}.cluster.local {{ hostname }}"
+        create: yes
+      when: ansible_node is not defined
+
+    - name: Configure node ip
+      lineinfile:
+        path: /etc/default/kubelet
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_node }}
+        regexp: KUBELET_EXTRA_ARGS=
+        create: yes
+      when: ansible_node is defined
+
+    - name: Configure node ip
+      lineinfile:
+        path: /etc/default/kubelet
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ hostip }}
+        regexp: KUBELET_EXTRA_ARGS=
+        create: yes
+      when: ansible_node is not defined
+
+    - name: Include the external etcd playbook
+      include_tasks: k8s.setup.etcd.yaml
+      when: k8s_etcd_ca_crt is defined and k8s_etcd_apiserver_crt is defined and k8s_etcd_apiserver_key is defined
+
+    - name: Include the haproxy playbook
+      include_tasks: k8s.setup.haproxy.yaml
+      when: k8s_haproxy_config is defined
+
+    - name: Copy the kubeadm configuration file to server location
+      copy: src={{ k8s_kubeadm_config }} dest=/tmp/kubeadm-config.yaml mode=0644
+
+    - name: Initialize the Kubernetes cluster using kubeadm
+      command: kubeadm init --upload-certs --config /tmp/kubeadm-config.yaml
+      register: kubeadm_output
+    - debug: var=kubeadm_output.stdout_lines

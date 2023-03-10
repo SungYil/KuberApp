@@ -1,0 +1,41 @@
+- hosts: all
+  vars:
+    ubuntu_version: 22.04
+    crio_version: 1.25
+    crio_insecure_registries: registry-service.registry.svc.cluster.local:5000
+  become: true
+  tasks:
+    - name: Add crio apt key
+      apt_key:
+        url: "{{ item }}"
+        state: present
+      with_items:
+        - https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crio_version }}/xUbuntu_{{ ubuntu_version }}/Release.key
+        - https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ubuntu_version }}/Release.key
+
+    - name: Add crio apt repository
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      with_items:
+        - deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crio_version }}/xUbuntu_{{ ubuntu_version }}/ /
+        - deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ubuntu_version }}/ /
+
+    - name: Install crio packages
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      with_items:
+        - cri-o
+        - cri-o-runc
+        - cri-tools
+
+    - name: Copy the crio configuration file to server location
+      template:
+        src: crio.conf
+        dest: /etc/crio/crio.conf
+        mode: 0644
+
+    - name: Start crio service
+      service: name=crio state=started enabled=yes
